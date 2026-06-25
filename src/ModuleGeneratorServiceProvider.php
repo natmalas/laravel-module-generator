@@ -3,7 +3,7 @@
 namespace Nat\ModuleGenerator;
 
 use Illuminate\Support\ServiceProvider;
-use Nat\ModuleGenerator\Config\ModuleGeneratorConfig;
+use Nat\ModuleGenerator\Helper\ModuleGeneratorConfig;
 use Nat\ModuleGenerator\Console\GenerateModulesCommand;
 use Nat\ModuleGenerator\Enums\IncludeMode;
 use PhpParser\Parser;
@@ -14,10 +14,9 @@ class ModuleGeneratorServiceProvider extends ServiceProvider
     public function register()
     {
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/module-generator.php',
+            __DIR__ . '/module-generator.php',
             'module-generator'
         );
-
 
         $this->app->singleton(ModuleGeneratorConfig::class, function () {
             return new ModuleGeneratorConfig(
@@ -25,9 +24,7 @@ class ModuleGeneratorServiceProvider extends ServiceProvider
                 output: config('module-generator.output'),
                 publicClass: config('module-generator.public_class'),
                 privateClass: config('module-generator.private_class'),
-                includeMode: IncludeMode::from(
-                    config('module-generator.include_mode')
-                ),
+                includeMode: config('module-generator.include_mode'),
                 namespace: config("module-generator.namespace"),
             );
         });
@@ -41,7 +38,7 @@ class ModuleGeneratorServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->publishes([
-            __DIR__ . '/../config/module-generator.php'
+            __DIR__ . '/module-generator.php'
             => config_path('module-generator.php'),
         ], 'module-generator-config');
 

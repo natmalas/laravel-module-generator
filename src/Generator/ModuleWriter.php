@@ -5,7 +5,7 @@ namespace Nat\ModuleGenerator\Generator;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
-use Nat\ModuleGenerator\Config\ModuleGeneratorConfig;
+use Nat\ModuleGenerator\Helper\ModuleGeneratorConfig;
 
 final class ModuleWriter
 {

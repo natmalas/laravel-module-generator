@@ -3,7 +3,7 @@
 namespace Nat\ModuleGenerator\Generator;
 
 use Illuminate\Support\Facades\File;
-use Nat\ModuleGenerator\Config\ModuleGeneratorConfig;
+use Nat\ModuleGenerator\Helper\ModuleGeneratorConfig;
 use Nat\ModuleGenerator\DTO\ScanResult;
 
 final class ModuleGenerator

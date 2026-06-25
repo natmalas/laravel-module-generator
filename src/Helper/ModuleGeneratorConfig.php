@@ -1,6 +1,6 @@
 <?php
 
-namespace Nat\ModuleGenerator\Config;
+namespace Nat\ModuleGenerator\Helper;
 
 use Nat\ModuleGenerator\Enums\IncludeMode;
 
