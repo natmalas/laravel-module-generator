@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+/**
+ * @generated
+ *
+ * DO NOT EDIT.
+ * Run:
+ *
+ * php artisan modules:generate
+ */
+
+namespace {{ namespace }};
+
+{{ imports }}
+
+final class {{ module }}
+{
+{{ methods }}
+}

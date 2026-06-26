@@ -1,0 +1,91 @@
+
+
+    private function writeFlatModule(
+        string $directory,
+        Collection $classes,
+    ): void {
+        $module = $this->factory->createModule($directory);
+
+        $this->writeModule(
+            module: $module,
+            imports: $this->buildImports($classes),
+            methods: $this->buildFlatMethods($classes),
+        );
+    }
+
+    private function writeGroupedModules(
+        string $directory,
+        Collection $classes,
+    ): void {
+        $grouped = $classes->groupBy(
+            fn(ClassMetadata $class) => $class->role->key,
+        );
+
+        foreach ($grouped as $roleKey => $roleClasses) {
+            $roleDto = array_find($this->config->roles, fn(ModuleRole $role) => $role->key === $roleKey);
+            $module = $this->factory->createModule($directory, $roleDto);
+
+            $this->writeModule(
+                module: $module,
+                imports: $this->buildImports($roleClasses),
+                methods: $this->buildFlatMethods($roleClasses),
+            );
+        }
+
+        $module = $this->factory->createModule($directory);
+        $this->writeModule(
+            module: $module,
+            imports: $this->buildRoleImports($module, $grouped),
+            methods: $this->buildGroupedMethods($module, $grouped),
+        );
+    }
+
+    private function buildRoleImports(
+        ModuleDTO $module,
+        Collection $grouped,
+    ): string {
+        return $grouped
+            ->keys()
+            ->map(fn(string $role) => sprintf(
+                'use %s\%s;',
+                $module->namespace,
+                $module->className,
+            ))
+            ->implode("\n");
+    }
+
+        match ($this->config->structure) {
+            // ModuleStructure::FLAT => $this->writeFlatModule($directory, $classes),
+            //ModuleStructure::GROUPED => $this->writeGroupedModules($directory, $classes),
+        };
+
+
+
+    private function buildRoleMethods(
+        ModuleDTO $module
+    ): string {
+        return $module->classes
+            ->map(function ($class) {
+                /** @var ClassMetadata $class */
+                $method = $class->methodName();
+                $name = $class->className();
+
+                return <<<PHP
+                    public static function {$method}(): {$name}
+                    {
+                        return app({$name}::class);
+                    }
+                PHP;
+            })
+            ->implode("\n\n");
+    }
+
+    private function buildFlatMethods(Collection $classes): string
+    {
+        return $classes
+            ->map(fn(ClassMetadata $class) => $this->render->renderMethod(
+                $class->methodName(),
+                $class->className()
+            ))
+            ->implode("\n");
+    }

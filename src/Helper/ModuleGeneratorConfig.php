@@ -3,6 +3,7 @@
 namespace Nat\ModuleGenerator\Helper;
 
 use Nat\ModuleGenerator\Enums\IncludeMode;
+use Nat\ModuleGenerator\Enums\ModuleStructure;
 
 final readonly class ModuleGeneratorConfig
 {
@@ -12,40 +13,10 @@ final readonly class ModuleGeneratorConfig
     public function __construct(
         public array $scanPaths,
         public string $output,
-        public string $publicClass,
-        public string $privateClass,
         public IncludeMode $includeMode,
-        public string $namespace,
+        public string $label,
+        public ModuleStructure $structure,
+        public bool $nestModules,
+        public array $roles,
     ) {}
 }
-
-/*final class ModuleGeneratorConfig
-{
-    private const CONFIG_KEY = "module-generator";
-
-    public const config = [
-        "scan_paths" => ""
-    ];
-
-    public static function scanPaths(): array
-    {
-        return config(self::CONFIG_KEY . ".scan_paths");
-    }
-    public static function output(): string
-    {
-        return config(self::CONFIG_KEY . ".output");
-    }
-    public static function publicClass(): string
-    {
-        return config(self::CONFIG_KEY . ".public_class");
-    }
-    public static function privateClass(): string
-    {
-        return config(self::CONFIG_KEY . ".private_class");
-    }
-    public static function includeMode(): IncludeMode
-    {
-        return config(self::CONFIG_KEY . ".include_mode");
-    }
-}
-*/

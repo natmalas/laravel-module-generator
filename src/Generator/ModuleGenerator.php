@@ -2,34 +2,25 @@
 
 namespace Nat\ModuleGenerator\Generator;
 
-use Illuminate\Support\Facades\File;
-use Nat\ModuleGenerator\Helper\ModuleGeneratorConfig;
-use Nat\ModuleGenerator\DTO\ScanResult;
+use Nat\ModuleGenerator\UseScanResult;
 
 final class ModuleGenerator
 {
+    use UseScanResult;
+
     public function __construct(
         private ModuleWriter $writer,
-        private ModuleGeneratorConfig $config
     ) {}
 
-    public function generate(): ScanResult
+    public function generate(mixed $directory): void
     {
-        $result = new ScanResult();
-
-        foreach ($this->config->scanPaths as $scanPath) {
-            foreach (File::directories($scanPath) as $directory) {
-                try {
-                    $result->classes = [
-                        ...$result->classes,
-                        ...$this->writer->generateModule($directory),
-                    ];
-                } catch (\Throwable $e) {
-                    $result->errors[] = $e;
-                }
-            }
+        try {
+            $this->_r()->classes = [
+                ...$this->_r()->classes,
+                ...$this->writer->generateModule($directory),
+            ];
+        } catch (\Throwable $e) {
+            $this->_r()->errors[] = $e;
         }
-
-        return $result;
     }
 }

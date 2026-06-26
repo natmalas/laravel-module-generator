@@ -11,6 +11,11 @@ use PhpParser\ParserFactory;
 
 class ModuleGeneratorServiceProvider extends ServiceProvider
 {
+    private function _config(string $key): mixed
+    {
+        return config("module-generator." . $key);
+    }
+
     public function register()
     {
         $this->mergeConfigFrom(
@@ -20,18 +25,23 @@ class ModuleGeneratorServiceProvider extends ServiceProvider
 
         $this->app->singleton(ModuleGeneratorConfig::class, function () {
             return new ModuleGeneratorConfig(
-                scanPaths: config('module-generator.scan_paths'),
-                output: config('module-generator.output'),
-                publicClass: config('module-generator.public_class'),
-                privateClass: config('module-generator.private_class'),
-                includeMode: config('module-generator.include_mode'),
-                namespace: config("module-generator.namespace"),
+                scanPaths: $this->_config('scan_paths'),
+                output: $this->_config('output'),
+                includeMode: $this->_config('include_mode'),
+                structure: $this->_config('structure'),
+                nestModules: $this->_config("nest_modules"),
+                roles: $this->_config("roles"),
+                label: $this->_config("label")
             );
         });
 
         $this->app->singleton(
             Parser::class,
             fn() => (new ParserFactory())->createForNewestSupportedVersion()
+        );
+
+        $this->app->singleton(
+            ScanResult::class
         );
     }
 
